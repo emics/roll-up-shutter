@@ -1,0 +1,485 @@
+MPASM  5.20                        SOURCE.ASM   11-23-2008  2:23:14         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;**************************************************
+                      00002 ; Tapparelle di Emiliano
+                      00003 ; source.asm
+                      00004 ;
+                      00005 ; (c) 2008, Emiliano Macedonio
+                      00006 ; http://www.macedonio.it
+                      00007 ;**************************************************
+Warning[205]: Found directive in column 1. (PROCESSOR)
+                      00008 PROCESSOR 16F84A
+Warning[205]: Found directive in column 1. (RADIX)
+                      00009 RADIX DEC
+Warning[205]: Found directive in column 1. (INCLUDE)
+                      00010 INCLUDE "P16F84.INC"
+                      00001 ;==========================================================================
+                      00002 ;Rev: Date: Reason:
+                      00003 ;2.00 07/24/96 Renamed to reflect the name change to PIC16F84.
+                      00004 ;1.01 05/17/96 Corrected BADRAM map
+                      00005 ;1.00 10/31/95 Initial Release
+                      00006 ;==========================================================================
+                      00007 ;
+                      00008 ; Verify Processor
+                      00009 ;
+                      00010 ;==========================================================================
+Warning[205]: Found directive in column 1. (IFNDEF)
+                      00011 IFNDEF __16F84
+Warning[205]: Found directive in column 1. (MESSG)
+Message[301]: MESSAGE: (Processor-header file mismatch. Verify selected processor.)
+                      00012 MESSG "Processor-header file mismatch. Verify selected processor."
+Warning[205]: Found directive in column 1. (ENDIF)
+                      00013 ENDIF
+                      00014 ;==========================================================================
+                      00015 ;
+                      00016 ; Register Definitions
+                      00017 ;
+                      00018 ;==========================================================================
+  00000000            00019 W EQU H'0000'
+  00000001            00020 F EQU H'0001'
+                      00021 ;----- Register Files------------------------------------------------------
+  00000000            00022 INDF EQU H'0000'
+  00000001            00023 TMR0 EQU H'0001'
+  00000002            00024 PCL EQU H'0002'
+  00000003            00025 STATUS EQU H'0003'
+  00000004            00026 FSR EQU H'0004'
+  00000005            00027 PORTA EQU H'0005'
+  00000006            00028 PORTB EQU H'0006'
+  00000008            00029 EEDATA EQU H'0008'
+  00000009            00030 EEADR EQU H'0009'
+  0000000A            00031 PCLATH EQU H'000A'
+  0000000B            00032 INTCON EQU H'000B'
+  00000081            00033 OPTION_REG EQU H'0081'
+  00000085            00034 TRISA EQU H'0085'
+  00000086            00035 TRISB EQU H'0086'
+  00000088            00036 EECON1 EQU H'0088'
+MPASM  5.20                        SOURCE.ASM   11-23-2008  2:23:14         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000089            00037 EECON2 EQU H'0089'
+                      00038 ;----- STATUS Bits --------------------------------------------------------
+  00000007            00039 IRP EQU H'0007'
+  00000006            00040 RP1 EQU H'0006'
+  00000005            00041 RP0 EQU H'0005'
+  00000004            00042 NOT_TO EQU H'0004'
+  00000003            00043 NOT_PD EQU H'0003'
+  00000002            00044 Z EQU H'0002'
+  00000001            00045 DC EQU H'0001'
+  00000000            00046 C EQU H'0000'
+                      00047 ;----- INTCON Bits --------------------------------------------------------
+  00000007            00048 GIE EQU H'0007'
+  00000006            00049 EEIE EQU H'0006'
+  00000005            00050 T0IE EQU H'0005'
+  00000004            00051 INTE EQU H'0004'
+  00000003            00052 RBIE EQU H'0003'
+  00000002            00053 T0IF EQU H'0002'
+  00000001            00054 INTF EQU H'0001'
+  00000000            00055 RBIF EQU H'0000'
+                      00056 ;----- OPTION Bits --------------------------------------------------------
+  00000007            00057 NOT_RBPU EQU H'0007'
+  00000006            00058 INTEDG EQU H'0006'
+  00000005            00059 T0CS EQU H'0005'
+  00000004            00060 T0SE EQU H'0004'
+  00000003            00061 PSA EQU H'0003'
+  00000002            00062 PS2 EQU H'0002'
+  00000001            00063 PS1 EQU H'0001'
+  00000000            00064 PS0 EQU H'0000'
+                      00065 ;----- EECON1 Bits --------------------------------------------------------
+  00000004            00066 EEIF EQU H'0004'
+  00000003            00067 WRERR EQU H'0003'
+  00000002            00068 WREN EQU H'0002'
+  00000001            00069 WR EQU H'0001'
+  00000000            00070 RD EQU H'0000'
+                      00071 ;==========================================================================
+                      00072 ;
+                      00073 ; RAM Definition
+                      00074 ;
+                      00075 ;==========================================================================
+Warning[205]: Found directive in column 1. (__MAXRAM)
+  000000CF            00076 __MAXRAM H'CF'
+Warning[205]: Found directive in column 1. (__BADRAM)
+                      00077 __BADRAM H'07', H'50'-H'7F', H'87'
+                      00078 ;==========================================================================
+                      00079 ;
+                      00080 ; Configuration Bits
+                      00081 ;
+                      00082 ;==========================================================================
+  0000000F            00083 _CP_ON EQU H'000F'
+  00003FFF            00084 _CP_OFF EQU H'3FFF'
+  00003FF7            00085 _PWRTE_ON EQU H'3FF7'
+  00003FFF            00086 _PWRTE_OFF EQU H'3FFF'
+  00003FFF            00087 _WDT_ON EQU H'3FFF'
+MPASM  5.20                        SOURCE.ASM   11-23-2008  2:23:14         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00003FFB            00088 _WDT_OFF EQU H'3FFB'
+  00003FFC            00089 _LP_OSC EQU H'3FFC'
+  00003FFD            00090 _XT_OSC EQU H'3FFD'
+  00003FFE            00091 _HS_OSC EQU H'3FFE'
+  00003FFF            00092 _RC_OSC EQU H'3FFF'
+Warning[205]: Found directive in column 1. (LIST)
+                      00093 LIST
+Warning[205]: Found directive in column 1. (ERRORLEVEL)
+                      00011 ERRORLEVEL -302
+                      00012 ;Setup of PIC configuration flags
+                      00013 ;XT oscillator
+                      00014 ;Disable watch dog timer
+                      00015 ;Enable power up timer
+                      00016 ;Disable code protect
+Warning[205]: Found directive in column 1. (__CONFIG)
+2007   3FF1           00017 __CONFIG 0x3FF1
+  00000000            00018 REL1 EQU 0
+  00000001            00019 REL2 EQU 1
+  00000004            00020 SW1  EQU 4
+  00000005            00021 SW2  EQU 5
+                      00022 
+Warning[205]: Found directive in column 1. (ORG)
+000C                  00023 ORG 0x0C
+000C                  00024 Count RES 1             ;Contatore di 1
+000D                  00025 Cicle RES 1                     ;Contatore Ciclo Loop
+000E                  00026 FlagStop RES 1          ;Flag di stop processo
+                      00027         ;Reset Vector
+                      00028         ;Start point at CPU reset
+Warning[205]: Found directive in column 1. (ORG)
+0000                  00029 ORG 0x00
+                      00030         ;Jump to main body of program.
+Warning[203]: Found opcode in column 1. (goto)
+0000   280B           00031 goto Start
+                      00032 
+                      00033 ; Interrupt vector
+                      00034 ; Start point for every interrupt handler
+Warning[205]: Found directive in column 1. (ORG)
+0004                  00035 ORG 0x04
+                      00036 ; Interrupt handler
+Warning[203]: Found opcode in column 1. (bcf)
+0004   1006           00037 bcf PORTB,REL1
+                      00038 
+Warning[203]: Found opcode in column 1. (bcf)
+0005   100B           00039 bcf INTCON,RBIF         ;Reset RBIF flag
+Warning[203]: Found opcode in column 1. (btfsc)
+0006   1A06           00040 btfsc PORTB,SW1         ;Pulsante 1 premuto?
+Warning[203]: Found opcode in column 1. (Call)
+0007   201A           00041 Call Switch1GO
+Warning[203]: Found opcode in column 1. (btfsc)
+0008   1A86           00042 btfsc PORTB,SW2         ;Pulsante 2 premuto?
+Warning[203]: Found opcode in column 1. (Call)
+0009   2023           00043 Call Switch2GO
+Warning[203]: Found opcode in column 1. (retfie)
+MPASM  5.20                        SOURCE.ASM   11-23-2008  2:23:14         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000A   0009           00044 retfie                          ;Return to the main body
+                      00045 
+                      00046 
+000B                  00047 Start:
+                      00048                 
+000B   1683           00049         bsf STATUS,RP0 ;Commuta sul secondo banco dei registri per accedere ai registri TRISA e TRISB
+                      00050                 ;Definizione delle linee di I/O (0=Uscita, 1=Ingresso)
+                      00051                 ;Definizione della porta A
+000C   3000           00052         movlw B'00000000'
+000D   0085           00053         movwf TRISA
+                      00054                 ;Definizione della porta B
+                      00055                 ;Le linee da RB0 a RB3 vengono programmate in uscita per essere collegate ai due relè
+                      00056                 ;Le linee da RB4 a RB7 vengono programmate in ingresso per essere collegate ai due pulsa
+                            nti
+000E   30F0           00057         movlw B'11110000'
+000F   0086           00058         movwf TRISB
+                      00059 
+                      00060         ;Set to 0 the INTEDG bit on OPTION register
+                      00061         ;to have an interrupt on the falling edge of RB0/INT
+                      00062         ;Assegna il PRESCALER a TMR0 e lo configura a 1:32
+                      00063         ;Vedi subroutine Delay per maggiori chiarimenti
+0010   3004           00064         movlw B'00000100'
+0011   0081           00065         movwf OPTION_REG
+                      00066         
+0012   1283           00067         bcf STATUS,RP0  ;Commuta sul primo banco dei registri
+                      00068 
+0013   158B           00069         bsf INTCON,RBIE ;Enables RBIE interrupt
+0014   178B           00070         bsf INTCON,GIE  ;Enables interrupts
+                      00071         
+                      00072         ;Spegne tutti i relè
+0015   205C           00073         Call TurnOffRel1
+0016   2060           00074         Call TurnOffRel2
+                      00075         ;setta a 0 il FlagStop
+0017   100E           00076         bcf FlagStop,0
+                      00077 
+0018                  00078 MainLoop
+0018   0063           00079         sleep                   ;Power Down Mode
+0019   2818           00080         goto MainLoop
+                      00081 
+001A                  00082 Switch1GO
+001A   205A           00083         Call TurnOnRel1
+001B   2039           00084         Call Delay1Sec                  ;Primo ritardo per vedere se tutta la corsa o no
+001C   1E06           00085         btfss PORTB,SW1         ;Pulsante 1 ancora premuto?
+001D   282C           00086         goto DelayLong          ;No - Tutta la corsa
+001E                  00087 Switch1Running                  ;Si - Corsa a comando
+001E   2039           00088         Call Delay1Sec
+001F   1A06           00089         btfsc PORTB,SW1         ;Pulsante 1 ancora premuto?
+0020   281E           00090         goto Switch1Running     ;Si - Continua 
+0021   205C           00091         Call TurnOffRel1        ;NO - Spegni Relé
+0022   0008           00092         return
+                      00093 
+0023                  00094 Switch2GO
+0023   205E           00095         Call TurnOnRel2
+MPASM  5.20                        SOURCE.ASM   11-23-2008  2:23:14         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0024   2039           00096         Call Delay1Sec          ;Primo ritardo per vedere se tutta la corsa o no
+0025   1E86           00097         btfss PORTB,SW2         ;Pulsante 2 ancora premuto?
+0026   282C           00098         goto DelayLong          ;No - Tutta la corsa
+0027                  00099 Switch2Running                  ;Si - Corsa a comando
+0027   2039           00100         Call Delay1Sec
+0028   1A86           00101         btfsc PORTB,SW2         ;Pulsante 2 ancora premuto?
+0029   2827           00102         goto Switch2Running     ;Si - Continua 
+002A   2060           00103         Call TurnOffRel2        ;NO - Spegni Relé
+002B   0008           00104         return
+                      00105 
+002C                  00106 DelayLong
+002C   301E           00107         movlw 30                        ;30 Cicli = 30 secondi di ritardo per salita o discesa completa 
+                            tapparelle
+002D   008D           00108         movwf Cicle
+002E                  00109 DelayLongLoop
+002E   1C0E           00110         btfss FlagStop,0        ;Controllo FlagStop
+002F   2045           00111         Call Delay                      ;Se FlagStop = 0 1 secondo
+0030   0B8D           00112         decfsz Cicle,1          ;Se FlagStop = 1 Decremento Cicle
+0031   282E           00113         goto DelayLongLoop      ;Cicle <> 0
+0032   2054           00114         Call AllOff                     ;Cicle = 0
+0033   0008           00115         return                  
+                      00116 
+0034                  00117 CheckPress
+0034   1A06           00118         btfsc PORTB,SW1
+0035   140E           00119         bsf FlagStop,0
+0036   1A86           00120         btfsc PORTB,SW2
+0037   140E           00121         bsf FlagStop,0
+0038   0008           00122         return
+                      00123 
+0039                  00124 Delay1Sec
+                      00125         ; Ritardo 1 secondo
+                      00126         ; Inizializza TMR0 per ottenere 250 conteggi prima di arrivare a zero.
+                      00127         ; Il registro TMR0 e' un registro ad 8 bit quindi se viene incrementato
+                      00128         ; nuovamentre quando arriva a 255 ricomincia a contare da zero.
+                      00129         ; Se lo si inizializza a 6 dovra' essere incrementato 256 - 6 = 250 volte
+                      00130         ; prima passare per lo zero.
+0039   3006           00131         movlw 6
+003A   0081           00132         movwf TMR0
+                      00133         ; Il registro Count viene inizializzato a 125 in quanto il suo scopo e' far
+                      00134         ; uscire il loop
+003B   307D           00135         movlw 125
+003C   008C           00136         movwf Count
+                      00137         ;Loop di conteggio
+003D                  00138 DelayLoop1Sec
+                      00139         ;TMR0 vale 0 ?
+003D   0801           00140         movf TMR0,W
+003E   1D03           00141         btfss STATUS,Z
+003F   283D           00142         goto DelayLoop1Sec      ;No, aspetta...
+0040   3006           00143         movlw 6                 ;Si, reimposta TMR0 e controlla se
+0041   0081           00144         movwf TMR0              ;e' passato per 125 volte per lo zero
+0042   0B8C           00145         decfsz Count,1
+0043   283D           00146         goto DelayLoop1Sec
+0044   0008           00147         return
+MPASM  5.20                        SOURCE.ASM   11-23-2008  2:23:14         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00148 
+0045                  00149 Delay
+                      00150         ; Ritardo 1 secondo
+                      00151         ; Inizializza TMR0 per ottenere 250 conteggi prima di arrivare a zero.
+                      00152         ; Il registro TMR0 e' un registro ad 8 bit quindi se viene incrementato
+                      00153         ; nuovamentre quando arriva a 255 ricomincia a contare da zero.
+                      00154         ; Se lo si inizializza a 6 dovra' essere incrementato 256 - 6 = 250 volte
+                      00155         ; prima passare per lo zero.
+0045   3006           00156         movlw 6
+0046   0081           00157         movwf TMR0
+                      00158         ; Il registro Count viene inizializzato a 125 in quanto il suo scopo e' far
+                      00159         ; uscire il loop
+0047   307D           00160         movlw 125
+0048   008C           00161         movwf Count
+                      00162         ;Loop di conteggio
+0049                  00163 DelayLoop
+                      00164         ;check pressione tasto 
+0049   2034           00165         Call CheckPress
+004A   180E           00166         btfsc FlagStop,0
+004B   0008           00167         return
+                      00168         ;TMR0 vale 0 ?
+004C   0801           00169         movf TMR0,W
+004D   1D03           00170         btfss STATUS,Z
+004E   2849           00171         goto DelayLoop  ;No, aspetta...
+004F   3006           00172         movlw 6                 ;Si, reimposta TMR0 e controlla se
+0050   0081           00173         movwf TMR0              ;e' passato per 125 volte per lo zero
+0051   0B8C           00174         decfsz Count,1
+0052   2849           00175         goto DelayLoop
+0053   0008           00176         return
+                      00177 
+0054                  00178 AllOff
+                      00179         ;Spegne il REL1
+0054   1006           00180         bcf PORTB,REL1
+                      00181         ;Spegne il REL2
+0055   1086           00182         bcf PORTB,REL2
+                      00183         ;azzera FlagStop
+0056   100E           00184         bcf FlagStop,0
+0057   2039           00185         Call Delay1Sec
+0058   0009           00186         retfie
+0059   2818           00187         goto MainLoop
+                      00188 
+005A                  00189 TurnOnRel1
+                      00190         ;Accende il REL1
+005A   1406           00191         bsf PORTB,REL1
+005B   0008           00192         return
+                      00193 
+005C                  00194 TurnOffRel1
+                      00195         ;Spegne il REL1
+005C   1006           00196         bcf PORTB,REL1
+005D   0008           00197         return
+                      00198 
+005E                  00199 TurnOnRel2
+                      00200         ;Accende il REL2
+MPASM  5.20                        SOURCE.ASM   11-23-2008  2:23:14         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+005E   1486           00201         bsf PORTB,REL2
+005F   0008           00202         return
+                      00203 
+0060                  00204 TurnOffRel2
+                      00205         ;Spegne il REL2
+0060   1086           00206         bcf PORTB,REL2
+0061   0008           00207         return
+                      00208 
+Warning[205]: Found directive in column 1. (END)
+                      00209 END
+MPASM  5.20                        SOURCE.ASM   11-23-2008  2:23:14         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+AllOff                            00000054
+C                                 00000000
+CheckPress                        00000034
+Cicle                             0000000D
+Count                             0000000C
+DC                                00000001
+Delay                             00000045
+Delay1Sec                         00000039
+DelayLong                         0000002C
+DelayLongLoop                     0000002E
+DelayLoop                         00000049
+DelayLoop1Sec                     0000003D
+EEADR                             00000009
+EECON1                            00000088
+EECON2                            00000089
+EEDATA                            00000008
+EEIE                              00000006
+EEIF                              00000004
+F                                 00000001
+FSR                               00000004
+FlagStop                          0000000E
+GIE                               00000007
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+MainLoop                          00000018
+NOT_PD                            00000003
+NOT_RBPU                          00000007
+NOT_TO                            00000004
+OPTION_REG                        00000081
+PCL                               00000002
+PCLATH                            0000000A
+PORTA                             00000005
+PORTB                             00000006
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RBIE                              00000003
+RBIF                              00000000
+RD                                00000000
+REL1                              00000000
+REL2                              00000001
+RP0                               00000005
+RP1                               00000006
+STATUS                            00000003
+SW1                               00000004
+SW2                               00000005
+Start                             0000000B
+Switch1GO                         0000001A
+MPASM  5.20                        SOURCE.ASM   11-23-2008  2:23:14         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+Switch1Running                    0000001E
+Switch2GO                         00000023
+Switch2Running                    00000027
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+TMR0                              00000001
+TRISA                             00000085
+TRISB                             00000086
+TurnOffRel1                       0000005C
+TurnOffRel2                       00000060
+TurnOnRel1                        0000005A
+TurnOnRel2                        0000005E
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_CP_OFF                           00003FFF
+_CP_ON                            0000000F
+_HS_OSC                           00003FFE
+_LP_OSC                           00003FFC
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FFD
+__16F84A                          00000001
+__DEBUG                           1
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XX-------------- ----------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    95
+Program Memory Words Free:   929
+
+
+Errors   :     0
+Warnings :    23 reported,     0 suppressed
+Messages :     1 reported,     3 suppressed
+
+
