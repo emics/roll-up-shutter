@@ -9,4 +9,8 @@ Pushing button durin spin stop the motor.
 
 it'simple and need only a little PIC
 
+this is the Schema:
+
+![Schema](https://raw.githubusercontent.com/emics/roll-up-shutter/master/Immagine%20001.jpg)
+
 good work
